@@ -13,6 +13,10 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->post('/users/login', 'UserController@login');
+$router->post('/users', 'UserController@store');
+
+$router->group(['middleware' => 'auth:api'], function () use ($router) {
+    $router->get('/users/me', 'UserController@me');
+    $router->post('/users/logout', 'UserController@logout');
 });
