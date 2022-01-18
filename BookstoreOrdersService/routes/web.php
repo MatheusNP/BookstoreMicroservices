@@ -13,6 +13,6 @@
 |
 */
 
-$router->get('/orders', 'BookController@index');
+$router->get('/orders/{$id}', 'BookController@index');
 $router->post('/orders', 'BookController@store');
 $router->delete('/orders/{id}', 'BookController@destroy');
