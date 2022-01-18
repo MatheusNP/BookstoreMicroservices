@@ -29,9 +29,9 @@ class OrderController extends Controller
      * @param integer $id
      * @return JsonResponse
      */
-    public function index(Request $request, int $id): JsonResponse
+    public function list(Request $request, int $id): JsonResponse
     {
-        $orders = Order::all();
+        $orders = Order::where('user_id', $id);
 
         return $this->successResponse($orders);
     }
