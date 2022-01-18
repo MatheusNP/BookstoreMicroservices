@@ -26,12 +26,12 @@ class OrderController extends Controller
      * List all the user's orders;
      *
      * @param Request $request
-     * @param integer $id
+     * @param integer $user_id
      * @return JsonResponse
      */
-    public function list(Request $request, int $id): JsonResponse
+    public function list(Request $request, int $user_id): JsonResponse
     {
-        $orders = Order::where('user_id', $id)->get();
+        $orders = Order::where('user_id', $user_id)->get();
 
         return $this->successResponse($orders);
     }
