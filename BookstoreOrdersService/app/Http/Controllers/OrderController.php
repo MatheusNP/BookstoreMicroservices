@@ -31,7 +31,7 @@ class OrderController extends Controller
      */
     public function list(Request $request, int $id): JsonResponse
     {
-        $orders = Order::where('user_id', $id);
+        $orders = Order::where('user_id', $id)->get();
 
         return $this->successResponse($orders);
     }
