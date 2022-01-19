@@ -13,6 +13,5 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+$router->get('/tickets/{user_id}', 'TicketController@list');
+$router->post('/tickets', 'TicketController@store');
