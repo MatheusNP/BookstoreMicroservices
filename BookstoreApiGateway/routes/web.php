@@ -13,6 +13,18 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->group(['prefix' => 'api'], function() use ($router) {
+
+    $router->get('/books', 'BookController@index');
+    $router->get('/books/category/', 'BookController@list');
+    $router->get('/books/{product_id}', 'BookController@show');
+
+    $router->get('/orders/me/', 'OrderController@list');
+    $router->post('/orders', 'OrderController@store');
+    $router->delete('/orders/{id}', 'OrderController@destroy');
+
+    $router->get('/tickets/me/', 'TicketController@list');
+    $router->post('/tickets', 'TicketController@store');
+
+    $router->get('/search', 'SearchController@show');
 });
