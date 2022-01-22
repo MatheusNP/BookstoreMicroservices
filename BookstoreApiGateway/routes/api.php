@@ -21,4 +21,7 @@ $router->get('/orders/{user_id}', 'OrderController@list');
 $router->post('/orders', 'OrderController@store');
 $router->delete('/orders/{id}', 'OrderController@destroy');
 
+$router->get('/tickets/{user_id}', 'TicketController@list');
+$router->post('/tickets', 'TicketController@store');
+
 $router->get('/search', 'SearchController@show');
