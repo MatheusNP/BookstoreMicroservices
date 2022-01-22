@@ -46,13 +46,13 @@ trait ApiResponser
     }
 
     /**
-     * Build invalid responses;
+     * Build error message responses;
      *
      * @param string $message
      * @param integer $code
      * @return Response
      */
-    public function invalidResponse(string $message, int $code): Response
+    public function errorMessage(string $message, int $code): Response
     {
         return response($message, $code)->header('Content-Type', 'application/json');
     }
