@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        \App\Console\Commands\CreateBook::class,
+        \App\Console\Commands\PopulateBook::class,
     ];
 
     /**
