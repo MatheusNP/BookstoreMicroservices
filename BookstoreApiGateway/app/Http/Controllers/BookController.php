@@ -2,53 +2,63 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BookService;
 use App\Traits\ApiResponser;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class BookController extends Controller
 {
     use ApiResponser;
 
     /**
+     * The service to consume the books microservice;
+     *
+     * @var BookService
+     */
+    private $bookService;
+
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(BookService $bookService)
     {
-        //
+        $this->bookService = $bookService;
     }
 
     /**
      * Return the list of books;
      *
-     * @return JsonResponse
+     * @param Request $request
+     * @return Response
      */
-    public function index(): JsonResponse
+    public function index(Request $request): Response
     {
-        
+        return $this->validResponse($this->bookService->index());
     }
 
     /**
      * List books from a category;
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return Response
      */
-    public function list(Request $request): JsonResponse
+    public function list(Request $request): Response
     {
-        
+        return $this->validResponse($this->bookService->list($request->query()));
     }
 
     /**
      * Obtains and show a book;
      *
+     * @param Request $request
      * @param string $product_id
-     * @return JsonResponse
+     * @return Response
      */
-    public function show(string $product_id): JsonResponse
+    public function show(Request $request, string $product_id): Response
     {
-        
+        return $this->validResponse($this->bookService->show($product_id));
     }
 }
