@@ -37,7 +37,7 @@ class OrderController extends Controller
      */
     public function list(Request $request): Response
     {
-        $user_id = 1;
+        $user_id = $request->user()->id;
         return $this->validResponse($this->orderService->list($user_id));
     }
 
@@ -50,7 +50,7 @@ class OrderController extends Controller
     public function store(Request $request): Response
     {
         $data = $request->all();
-        $data['user_id'] = $user_id = 1;
+        $data['user_id'] = $request->user()->id;
 
         return $this->validResponse($this->orderService->store($data));
     }
@@ -64,7 +64,7 @@ class OrderController extends Controller
      */
     public function destroy(Request $request, int $id): Response
     {
-        $data['user_id'] = $user_id = 1;
+        $data['user_id'] = $request->user()->id;
 
         return $this->validResponse($this->orderService->destroy($id, $data));
     }
