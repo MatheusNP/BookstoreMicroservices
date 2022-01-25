@@ -15,16 +15,19 @@
 
 $router->group(['prefix' => 'api'], function() use ($router) {
 
-    $router->get('/books', 'BookController@index');
-    $router->get('/books/category/', 'BookController@list');
-    $router->get('/books/{product_id}', 'BookController@show');
+    $router->group(['middleware' => 'client.credentials'], function() use ($router) {
 
-    $router->get('/orders/me/', 'OrderController@list');
-    $router->post('/orders', 'OrderController@store');
-    $router->delete('/orders/{id}', 'OrderController@destroy');
+        $router->get('/books', 'BookController@index');
+        $router->get('/books/category/', 'BookController@list');
+        $router->get('/books/{product_id}', 'BookController@show');
 
-    $router->get('/tickets/me/', 'TicketController@list');
-    $router->post('/tickets', 'TicketController@store');
+        $router->get('/orders/me/', 'OrderController@list');
+        $router->post('/orders', 'OrderController@store');
+        $router->delete('/orders/{id}', 'OrderController@destroy');
 
-    $router->get('/search', 'SearchController@show');
+        $router->get('/tickets/me/', 'TicketController@list');
+        $router->post('/tickets', 'TicketController@store');
+
+        $router->get('/search', 'SearchController@show');
+    });
 });
