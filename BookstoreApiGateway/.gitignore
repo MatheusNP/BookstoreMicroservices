@@ -7,3 +7,4 @@ Homestead.yaml
 /.vscode
 
 database/database.sqlite
+storage/*.key
