@@ -15,6 +15,14 @@
 
 $router->group(['prefix' => 'api'], function() use ($router) {
 
+    $router->post('/users/login', 'UserController@login');
+    $router->post('/users', 'UserController@store');
+
+    $router->group(['middleware' => 'auth:api'], function () use ($router) {
+        $router->get('/users/me', 'UserController@me');
+        $router->post('/users/logout', 'UserController@logout');
+    });
+
     $router->group(['middleware' => 'client.credentials'], function() use ($router) {
 
         $router->get('/books', 'BookController@index');
