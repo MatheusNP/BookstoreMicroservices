@@ -67,6 +67,11 @@ class OrderController extends Controller
     public function destroy(Request $request, int $id): JsonResponse
     {
         $order = Order::findOrFail($id);
+
+        if ($order->user_id !== ($request->get('user_id') ?? 0)) {
+            return $this->errorResponse('This order is not yours.', Response::HTTP_BAD_REQUEST);
+        }
+
         $order->delete();
 
         return $this->successResponse($order);
