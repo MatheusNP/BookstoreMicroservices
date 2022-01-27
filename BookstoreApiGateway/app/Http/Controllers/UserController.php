@@ -82,7 +82,7 @@ class UserController extends Controller
         }
 
         $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-        $response = ['token' => $token];
+        $response = ['token' => $token, 'user' => $user->id];
         return $this->successResponse($response);
     }
 
