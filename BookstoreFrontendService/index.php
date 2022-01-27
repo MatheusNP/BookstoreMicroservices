@@ -1,6 +1,9 @@
 <?php
 session_start();
-// include "dbconnect.php";
+require_once "./destroy.php";
+
+$index = true;
+require_once "./helpers/authorization.php";
 
 if (isset($_GET['Message'])) {
     print '<script type="text/javascript">
@@ -18,18 +21,6 @@ if (isset($_GET['response'])) {
 // {
 //   if($_POST['submit']=="login")
 //   {
-//         $username=$_POST['login_username'];
-//         $password=$_POST['login_password'];
-//         $query = "SELECT * from users where UserName ='$username' AND Password='$password'";
-//         $result = mysqli_query($con,$query)or die(mysql_error());
-//         if(mysqli_num_rows($result) > 0)
-//         {
-//              $row = mysqli_fetch_assoc($result);
-//              $_SESSION['user']=$row['UserName'];
-//              print'
-//                 <script type="text/javascript">alert("successfully logged in!!!");</script>
-//                   ';
-//         }
 //         else
 //         {    print'
 //               <script type="text/javascript">alert("Incorrect Username Or Password!!");</script>
@@ -48,16 +39,6 @@ if (isset($_GET['response'])) {
 //                <script type="text/javascript">alert("username is taken");</script>
 //                     ';
 
-//         }
-//         else
-//         {
-//           $query ="INSERT INTO users VALUES ('$username','$password')";
-//           $result=mysqli_query($con,$query);
-//           print'
-//                 <script type="text/javascript">
-//                  alert("Successfully Registered!!!");
-//                 </script>
-//                ';
 //         }
 //   }
 // }
@@ -144,11 +125,11 @@ if (isset($_GET['response'])) {
                                           <form class="form" role="form" method="post" action="index.php" accept-charset="UTF-8">
                                               <div class="form-group">
                                                   <label class="sr-only" for="username">Username</label>
-                                                  <input type="text" name="login_username" class="form-control" placeholder="Username" required>
+                                                  <input type="text" name="login_username" id="login_username" class="form-control" placeholder="Username" required>
                                               </div>
                                               <div class="form-group">
                                                   <label class="sr-only" for="password">Password</label>
-                                                  <input type="password" name="login_password" class="form-control"  placeholder="Password" required>
+                                                  <input type="password" name="login_password" id="login_password" class="form-control"  placeholder="Password" required>
                                               </div>
                                               <div class="form-group">
                                                   <button type="button" name="login" id="send_login" class="btn btn-block">
@@ -177,11 +158,11 @@ if (isset($_GET['response'])) {
                                         <form class="form" role="form" method="post" action="index.php" accept-charset="UTF-8">
                                             <div class="form-group">
                                                 <label class="sr-only" for="username">Username</label>
-                                                <input type="text" name="register_username" class="form-control" placeholder="Username" required>
+                                                <input type="text" name="register_username" id="register_username" class="form-control" placeholder="Username" required>
                                             </div>
                                             <div class="form-group">
                                                 <label class="sr-only" for="password">Password</label>
-                                                <input type="password" name="register_password" class="form-control"  placeholder="Password" required>
+                                                <input type="password" name="register_password" id="register_password" class="form-control"  placeholder="Password" required>
                                             </div>
                                             <div class="form-group">
                                                 <button type="button" name="submit" id="send_register" class="btn btn-block">
@@ -198,9 +179,9 @@ if (isset($_GET['response'])) {
                 </div>
             </li>
         <?php else: ?>
-            <li> <a href="#" class="btn btn-lg"> Hello ' .$_SESSION['user']. '.</a></li>
-            <li> <a href="cart.php" class="btn btn-lg"> Cart </a> </li>;
-            <li> <a href="destroy.php" class="btn btn-lg"> LogOut </a> </li>
+            <li> <span class="btn btn-lg"> Hello <?= $_SESSION['user']; ?></span></li>
+            <li> <span id='send_cart' class="btn btn-lg"> Cart </span> </li>
+            <li> <span id='send_logout' class="btn btn-lg"> LogOut </span> </li>
         <?php endif; ?>
 
           </ul>
@@ -353,19 +334,19 @@ if (isset($_GET['response'])) {
       <div class="row">
           <div class="col-sm-5 col-md-3 col-lg-3">
               <!-- Author.php?value=Durjoy%20Datta -->
-              <img class="img-responsive center-block" src="img/popular-author/0.jpg">
+              <img class="img-responsive center-block" src="img/popular-author/0.jpg" title="Durjoy%20Datta">
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
               <!-- Author.php?value=Chetan%20Bhagat -->
-              <img class="img-responsive center-block" src="img/popular-author/1.jpg">
+              <img class="img-responsive center-block" src="img/popular-author/1.jpg" title="Chetan%20Bhagat">
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
               <!-- Author.php?value=Dan%20Brown -->
-              <img class="img-responsive center-block" src="img/popular-author/2.jpg">
+              <img class="img-responsive center-block" src="img/popular-author/2.jpg" title="Dan%20Brown">
           </div>
           <div class="col-sm-6 col-md-3 col-lg-3">
               <!-- Author.php?value=Ravinder%20Singh -->
-              <img class="img-responsive center-block" src="img/popular-author/3.jpg">
+              <img class="img-responsive center-block" src="img/popular-author/3.jpg" title="Ravinder%20Singh">
           </div>
       </div>
       <div class="row">
@@ -485,12 +466,57 @@ if (isset($_GET['response'])) {
     $(document).ready(function() {
       // Log in;
       $("#send_login").click(function() {
-        alert('send_login');
+        $.ajax({
+          url: `http://localhost:8000/api/users/login`,
+          method: 'POST',
+          data: { username: $("#login_username").val(), password: $("#login_password").val() },
+          success: function(response, b) {
+            let user = response.data.user;
+            let token = `Bearer ${response.data.token}`;
+
+            userLogin(user, token);
+          },
+          error: function(error) {
+            getErrorMessage(error);
+          }
+        });
       });
 
       // Sign up;
       $("#send_register").click(function() {
-        alert('send_register');
+        $.ajax({
+          url: `http://localhost:8000/api/users`,
+          method: 'POST',
+          data: {
+            username: $("#register_username").val(),
+            password: $("#register_password").val(),
+            password_confirmation: $("#register_password").val()
+          },
+          success: function(response) {
+            alert("Successfully Registered!!!");
+            $('.btn.btn-default').trigger('click');
+          },
+          error: function(error) {
+            getErrorMessage(error);
+          }
+        });
+      });
+
+      // Log out;
+      $("#send_logout").click(function() {
+        $.ajax({
+          url: `http://localhost:8000/api/users/logout`,
+          method: 'POST',
+          beforeSend: function(xhr) {
+            xhr.setRequestHeader('Authorization', "<?= $_SESSION['token']; ?>");
+          },
+          success: function(data) {
+            userLogout()
+          },
+          error: function(error) {
+            getErrorMessage(error);
+          }
+        });
       });
 
       // Send query;
@@ -510,7 +536,18 @@ if (isset($_GET['response'])) {
 
       // News;
       $("#new>div>div>div").click(function() {
-        alert($(this).attr('id'));
+        $.ajax({
+          url: `http://localhost:8000/api/books/${$(this).attr('id')}`,
+          method: 'GET',
+          dataType: 'json',
+          success: function(data, b) {
+            console.log('data:', data);
+            console.log('b:', b);
+          },
+          error: function(error) {
+            getErrorMessage(error);
+          }
+        });
       });
 
       // Authors;
@@ -518,6 +555,37 @@ if (isset($_GET['response'])) {
         alert($(this).attr('title'));
       });
     });
+
+    function getErrorMessage(error) {
+      if (typeof error.responseJSON.error !== 'undefined') {
+        let errorMessage = Object
+          .values(error.responseJSON.error)
+          .flat(Infinity)
+          .join(' ');
+        alert(errorMessage);
+      } else {
+        console.log('error:', error);
+      }
+    }
+
+    function userLogin(user, token) {
+      alert("successfully logged in!!!");
+
+      let form = $('<form action="index.php" method="post">' +
+        '<input type="hidden" name="user" value="' + user + '" />' +
+        '<input type="hidden" name="token" value="' + token + '" />' +
+        '</form>');
+      $('body').append(form);
+      form.submit();
+    }
+
+    function userLogout() {
+      let form = $('<form action="index.php" method="post">' +
+        '<input type="hidden" name="logout" value="1" />' +
+        '</form>');
+      $('body').append(form);
+      form.submit();
+    }
   </script>
 </body>
 </html>
