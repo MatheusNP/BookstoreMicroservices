@@ -36,7 +36,7 @@ class OrderService
      */
     public function list(int $user_id): string
     {
-        return $this->performRequest('GET', "/orders/{$user_id}");
+        return $this->performRequest('GET', "/orders/user/{$user_id}");
     }
 
     /**
