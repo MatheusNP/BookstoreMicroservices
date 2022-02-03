@@ -44,9 +44,20 @@ class BookService
      * @param array $query
      * @return string
      */
-    public function list(array $query): string
+    public function listCategory(array $query): string
     {
         return $this->performRequest('GET', '/books/category/', [], $query);
+    }
+
+    /**
+     * Obtain the list of books by author from the book service;
+     *
+     * @param array $query
+     * @return string
+     */
+    public function listAuthor(array $query): string
+    {
+        return $this->performRequest('GET', '/books/author/', [], $query);
     }
 
     /**
@@ -58,5 +69,16 @@ class BookService
     public function show(string $product_id): string
     {
         return $this->performRequest('GET', "/books/{$product_id}");
+    }
+
+    /**
+     * Obtain the list of books;
+     *
+     * @param array $query
+     * @return string
+     */
+    public function ordered(array $query): string
+    {
+        return $this->performRequest('GET', '/books/ordered/', [], ['book_id' => $query]);
     }
 }

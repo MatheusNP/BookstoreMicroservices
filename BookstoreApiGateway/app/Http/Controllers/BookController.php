@@ -45,9 +45,20 @@ class BookController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function list(Request $request): Response
+    public function listCategory(Request $request): Response
     {
-        return $this->validResponse($this->bookService->list($request->query()));
+        return $this->validResponse($this->bookService->listCategory($request->query()));
+    }
+
+    /**
+     * List books from an author;
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function listAuthor(Request $request): Response
+    {
+        return $this->validResponse($this->bookService->listAuthor($request->query()));
     }
 
     /**
