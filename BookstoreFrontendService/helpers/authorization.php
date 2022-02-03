@@ -1,5 +1,7 @@
 <?php
 
+require_once "./destroy.php";
+
 if (
     isset($_POST['user']) &&
     isset($_POST['token'])
