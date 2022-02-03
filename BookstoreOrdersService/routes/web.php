@@ -13,6 +13,6 @@
 |
 */
 
-$router->get('/orders/{user_id}', 'OrderController@list');
+$router->get('/orders/user/{user_id}', 'OrderController@list');
 $router->post('/orders', 'OrderController@store');
 $router->delete('/orders/{id}', 'OrderController@destroy');
