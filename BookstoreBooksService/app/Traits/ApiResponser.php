@@ -10,11 +10,11 @@ trait ApiResponser {
     /**
      * Build success responses;
      *
-     * @param object $data
+     * @param object|array $data
      * @param integer $code
      * @return JsonResponse
      */
-    public function successResponse(object $data, int $code = Response::HTTP_OK): JsonResponse
+    public function successResponse($data, int $code = Response::HTTP_OK): JsonResponse
     {
         return response()->json(['data' => $data], $code);
     }

@@ -39,10 +39,24 @@ class BookController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function list(Request $request): JsonResponse
+    public function listCategory(Request $request): JsonResponse
     {
         $category_name = $request->get('category_name');
         $books = Book::where('category', $category_name)->get();
+
+        return $this->successResponse($books);
+    }
+
+    /**
+     * List books from an author;
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function listAuthor(Request $request): JsonResponse
+    {
+        $author_name = $request->get('author_name');
+        $books = Book::where('author', $author_name)->get();
 
         return $this->successResponse($books);
     }
@@ -58,5 +72,19 @@ class BookController extends Controller
         $book = Book::where('product_id', $product_id)->get();
 
         return $this->successResponse($book);
+    }
+
+    /**
+     * List books;
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function ordered(Request $request): JsonResponse
+    {
+        $book_id = $request->get('book_id');
+        $books = Book::find($book_id);
+
+        return $this->successResponse($books);
     }
 }

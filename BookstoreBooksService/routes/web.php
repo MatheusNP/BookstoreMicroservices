@@ -14,5 +14,7 @@
 */
 
 $router->get('/books', 'BookController@index');
-$router->get('/books/category/', 'BookController@list');
+$router->get('/books/category/', 'BookController@listCategory');
+$router->get('/books/author/', 'BookController@listAuthor');
+$router->get('/books/ordered/', 'BookController@ordered');
 $router->get('/books/{product_id}', 'BookController@show');
