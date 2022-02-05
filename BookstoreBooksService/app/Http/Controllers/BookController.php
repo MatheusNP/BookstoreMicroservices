@@ -42,7 +42,14 @@ class BookController extends Controller
     public function listCategory(Request $request): JsonResponse
     {
         $category_name = $request->get('category_name');
-        $books = Book::where('category', $category_name)->get();
+        $order_by = $request->get('order_by') ?? "";
+
+        $books = Book::where('category', $category_name);
+        if ($order_by) {
+            $field = explode('#', $order_by);
+            $books = $books->orderBy($field[0], $field[1]);
+        }
+        $books = $books->get();
 
         return $this->successResponse($books);
     }
@@ -56,7 +63,14 @@ class BookController extends Controller
     public function listAuthor(Request $request): JsonResponse
     {
         $author_name = $request->get('author_name');
-        $books = Book::where('author', $author_name)->get();
+        $order_by = $request->get('order_by') ?? "";
+
+        $books = Book::where('author', $author_name);
+        if ($order_by) {
+            $field = explode('#', $order_by);
+            $books = $books->orderBy($field[0], $field[1]);
+        }
+        $books = $books->get();
 
         return $this->successResponse($books);
     }
