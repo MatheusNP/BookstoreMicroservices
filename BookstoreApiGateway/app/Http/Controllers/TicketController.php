@@ -50,6 +50,7 @@ class TicketController extends Controller
     {
         $data = $request->all();
         $data['user_id'] = $request->user()->id;
+        $data['username'] = $request->user()->username;
 
         return $this->validResponse($this->ticketService->store($data));
     }

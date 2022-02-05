@@ -17,4 +17,8 @@ return [
         'base_uri' => env('SEARCH_SERVICE_BASE_URL'),
         'secret' => env('SEARCH_SERVICE_SECRET'),
     ],
+    'mail' => [
+        'base_uri' => env('MAIL_SERVICE_BASE_URL'),
+        'secret' => env('MAIL_SERVICE_SECRET'),
+    ],
 ];
