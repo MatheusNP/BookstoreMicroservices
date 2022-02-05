@@ -37,6 +37,6 @@ $router->group(['prefix' => 'api'], function() use ($router) {
         $router->get('/tickets/me/', 'TicketController@list');
         $router->post('/tickets', 'TicketController@store');
 
-        $router->get('/search', 'SearchController@show');
+        $router->get('/search', 'SearchController@show');    
     });
 });
