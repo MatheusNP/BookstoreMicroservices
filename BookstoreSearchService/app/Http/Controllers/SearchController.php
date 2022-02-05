@@ -34,6 +34,8 @@ class SearchController extends Controller
         $result = Book::where('title', 'like', "%{$term}%")
                     ->orWhere('author', 'like', "%{$term}%")
                     ->orWhere('category', 'like', "%{$term}%")
+                    ->orWhere('product_id', 'like', "%{$term}%")
+                    ->orWhere('publisher', 'like', "%{$term}%")
                     ->get();
 
         return $this->successResponse($result);
