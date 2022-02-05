@@ -1,9 +1,7 @@
 <?php
 session_start();
-if(!isset($_SESSION['user']))
-       header("location: index.php?Message=Login To Continue");
+require_once "./helpers/authorization.php";
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -15,182 +13,130 @@ if(!isset($_SESSION['user']))
 <body>
 <style>
 
-        #books .row{margin-top:30px;font-weight:800;}
-        @media only screen and (max-width: 760px) { #books .row{margin-top:10px;}}
-        .book-block {margin-top:20px;margin-bottom:10px; padding:10px 10px 10px 10px; border :1px solid #DEEAEE;border-radius:10px;height:100%;}
+    #books .row{margin-top:30px;font-weight:800;}
+    @media only screen and (max-width: 760px) { #books .row{margin-top:10px;}}
+    .book-block {margin-top:20px;margin-bottom:10px; padding:10px 10px 10px 10px; border :1px solid #DEEAEE;border-radius:10px;height:100%;}
 </style>
 
 </head>
 
 <body>
-  <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-             </button>
-            <a class="navbar-brand" href="index.php" style="padding: 1px;"><img class="img-responsive" alt="Brand" src="img/logo.jpg"  style="width: 147px;margin: 0px;"></a>
-        </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
-            <?php
-            if(!isset($_SESSION['user']))
-              {
-                echo'
-                <li>
-                    <button type="button" id="login_button" class="btn btn-lg" data-toggle="modal" data-target="#login">Login</button>
-                      <div id="login" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title text-center">Login Form</h4>
-                                </div>
-                                <div class="modal-body">
-                                  <ul >
-                                    <li>
-                                      <div class="row">
-                                          <div class="col-md-12 text-center">
-                                              <form class="form" role="form" method="post" action="index.php" accept-charset="UTF-8">
-                                                  <div class="form-group">
-                                                      <label class="sr-only" for="username">Username</label>
-                                                      <input type="text" name="login_username" class="form-control" placeholder="Username" required>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <label class="sr-only" for="password">Password</label>
-                                                      <input type="password" name="login_password" class="form-control"  placeholder="Password" required>
-                                                      <div class="help-block text-right">
-                                                          <a href="#">Forget the password ?</a>
-                                                      </div>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <button type="submit" name="submit" value="login" class="btn btn-block">
-                                                          Sign in
-                                                      </button>
-                                                  </div>
-                                              </form>
-                                          </div>
-                                      </div>
-                                    </li>
-                                  </ul>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                      </div>
-                </li>
-                <li>
-                  <button type="button" id="register_button" class="btn btn-lg" data-toggle="modal" data-target="#register">Sign Up</button>
-                    <div id="register" class="modal fade" role="dialog">
-                      <div class="modal-dialog">
-                          <div class="modal-content">
-                              <div class="modal-header">
-                                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                  <h4 class="modal-title text-center">Member Registration Form</h4>
-                              </div>
-                              <div class="modal-body">
-                                <ul >
-                                  <li>
-                                    <div class="row">
-                                        <div class="col-md-12 text-center">
-                                            <form class="form" role="form" method="post" action="index.php" accept-charset="UTF-8">
-                                                <div class="form-group">
-                                                    <label class="sr-only" for="username">Username</label>
-                                                    <input type="text" name="register_username" class="form-control" placeholder="Username" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="sr-only" for="password">Password</label>
-                                                    <input type="password" name="register_password" class="form-control"  placeholder="Password" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <button type="submit" name="submit" value="register" class="btn btn-block">
-                                                        Sign Up
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div class="modal-footer">
-                                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                              </div>
-                          </div>
-                      </div>
-                    </div>
-                </li>';
-              } 
-            else
-                echo' <li> <a href="destroy.php" class="btn btn-lg"> LogOut </a> </li>';
-            ?>
+    <?php include "./components/navbar.php"; ?>
 
-        </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav>
-  <div id="top" >
-      <div id="searchbox" class="container-fluid" style="width:112%;margin-left:-6%;margin-right:-6%;">
-          <div>
-              <form role="search" method="POST" action="Result.php">
-                  <input type="text" class="form-control" name="keyword" style="width:80%;margin:20px 10% 20px 10%;" placeholder="Search for a Book , Author Or Category">
-              </form>
-          </div>
-      </div>
-<?php
-include "dbconnect.php";
-$keyword=$_POST['keyword'];
+    <div id="top" >
+        <?php include "./components/searchbox.php"; ?>
 
-$query="select * from products  where PID like '%{$keyword}%' OR Title like '%{$keyword}%' OR Author like '%{$keyword}%' OR Publisher like '%{$keyword}%' OR Category like '%{$keyword}%'";
-$result=mysqli_query($con,$query) or die(mysqli_error($con));;
-
-    $i=0;
-    echo '<div class="container-fluid" id="books">
-        <div class="row">
-          <div class="col-xs-12 text-center" id="heading">
-                 <h4 style="color:#00B9F5;text-transform:uppercase;"> found  '. mysqli_num_rows($result) .' records </h4>
-           </div>
-        </div>';
-        if(mysqli_num_rows($result) > 0) 
-        {   
-            while($row = mysqli_fetch_assoc($result)) 
-            {
-            $path="img/books/" .$row['PID'].".jpg";
-            $description="description.php?ID=".$row["PID"];
-            if($i % 3 == 0)  $offset= 0;
-            else  $offset= 1; 
-            if($i%3==0)
-            echo '<div class="row">';
-            echo'
-               <a href="'.$description.'">
-                <div class="col-sm-5 col-sm-offset-1 col-md-3 col-md-offset-'.$offset.' col-lg-3 text-center w3-card-8 w3-dark-grey">
-                    <div class="book-block">
-                        <img class="book block-center img-responsive" src="'.$path.'">
-                        <hr>
-                         ' . $row["Title"] . '<br>
-                        ' . $row["Price"] .'  &nbsp
-                        <span style="text-decoration:line-through;color:#828282;"> ' . $row["MRP"] .' </span>
-                        <span class="label label-warning">'. $row["Discount"] .'%</span>
-                    </div>
+        <div class="container-fluid" id="search">
+            <div class="row">
+                <div class="col-xs-12 text-center" id="heading">
+                    <h4 style="color:#00B9F5;text-transform:uppercase;"> found 0 records </h4>
                 </div>
-                
-               </a> ';
-            $i++;
-            if($i%3==0)
-            echo '</div>';
-            }
-        }
-    echo '</div>';
-?>
+            </div>
+        </div>
+    </div>
 
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+    var urlParams = new URLSearchParams(window.location.search);
+    var term = urlParams.get('term');
+
+    $(document).ready(function() {
+
+        $.ajax({
+            url: `http://localhost:8000/api/search/`,
+            method: 'GET',
+            data: {
+                'term': term,
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', "<?= $_SESSION['token']; ?>");
+            },
+            success: function(response) {
+                setBookListElements(response.data);
+            },
+            error: function(error) {
+                getErrorMessage(error);
+            }
+        });
+
+        actionButtons();
+    });
+
+    function actionButtons() {
+    }
+
+    function getErrorMessage(error) {
+        if (typeof error.responseJSON !== 'undefined') {
+            let errorMessage = Object
+                .values(error.responseJSON.error)
+                .flat(Infinity)
+                .join(' ');
+            alert(errorMessage);
+        } else {
+            console.log('error:', error);
+            alert('Something is wrong. Try again later.');
+        }
+    }
+
+    function setBookListElements(data) {
+
+        $('#heading>h4').html(` found ${data.length} records `);
+
+        let orders = $(`<div id="list"></div>`);
+        const book_element = $(`
+            <div>
+                <a href="#">
+                    <div class="col-sm-5 col-sm-offset-1 col-md-3 col-lg-3 text-center w3-card-8 w3-dark-grey">
+                        <div class="book-block">
+                            <img class="book block-center img-responsive" src="#">
+                            <hr>
+                            <span class="book_title"></span><br>
+                            <span class="book_price"></span> &nbsp
+                            <span style="text-decoration:line-through;color:#828282;"> <span class="book_mrp"></span> </span>
+                            <span class="label label-warning"><span class="book_discount"></span>%</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        `);
+
+        let row_clone = $(`<div class="row"></div>`);
+
+        let offset = 0
+        let aux_offset = 1;
+        data.forEach(function(value, index) {
+
+            let book_clone = book_element.clone();
+            book_clone.find('a').attr('href', `description.php?ID=${value.product_id}`);
+            book_clone.find('.col-sm-5').addClass(`col-md-offset-${(offset > 1 ? 1 : offset)}`);
+            book_clone.find('img').attr('src', `img/books/${value.product_id}.jpg`);
+            book_clone.find('.book_title').html(value.title);
+            book_clone.find('.book_price').html(value.offered_price);
+            book_clone.find('.book_mrp').html(value.maximum_price);
+            book_clone.find('.book_discount').html(value.discount_pctg);
+
+            row_clone.append(book_clone[0].outerHTML);
+
+            offset = ((aux_offset++) % 3);
+            if (offset == 0) {
+                orders.append(row_clone[0].outerHTML);
+                row_clone = $(`<div class="row"></div>`);
+            }
+        });
+        if (offset != 0) {
+            orders.append(row_clone[0].outerHTML);
+        }
+
+        $('#search').append(orders[0].outerHTML);
+    }
+
+    </script>
 
 </body>
-</html>		
+</html>

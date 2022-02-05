@@ -1,20 +1,17 @@
 <?php
 session_start();
-
 require_once "./helpers/authorization.php";
-// if(!isset($_SESSION['user']))
-//        header("location: index.php?Message=Login To Continue");
 
-$customer=$_SESSION['user'];
-if (isset($_GET['place'])) {
-    $query="DELETE FROM cart where Customer='$customer'";
-    $result=mysqli_query($con,$query);
-    ?>
-    <script type="text/javascript">
-        alert("Order SuccessFully Placed!! Kindly Keep the cash Ready. It will be collected on Delivery");
-    </script>
-    <?php
-}
+// $customer=$_SESSION['user'];
+// if (isset($_GET['place'])) {
+//     $query="DELETE FROM cart where Customer='$customer'";
+//     $result=mysqli_query($con,$query);
+//     php?
+//     <script type="text/javascript">
+//         alert("Order SuccessFully Placed!! Kindly Keep the cash Ready. It will be collected on Delivery");
+//     </script>
+//     ?php
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,13 +41,7 @@ if (isset($_GET['place'])) {
     <?php include "./components/navbar.php"; ?>
 
     <div id="top" >
-        <div id="searchbox" class="container-fluid" style="width:112%;margin-left:-6%;margin-right:-6%;">
-            <div>
-                <form role="search" method="POST" action="Result.php">
-                    <input type="text" class="form-control" name="keyword" style="width:80%;margin:20px 10% 20px 10%;" placeholder="Search for a Book , Author Or Category">
-                </form>
-            </div>
-        </div>
+        <?php include "./components/searchbox.php"; ?>
 
         <div class="container-fluid" id="cart">
             <div class="row">
@@ -77,7 +68,7 @@ if (isset($_GET['place'])) {
                     <div class="row">
                         <div class="panel col-xs-8 col-xs-offset-2 col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4 text-center" style="color:#D67B22;font-weight:800;">
                             <div class="panel-heading">TOTAL</div>
-                            <div class="panel-body" id="total_price">'.$total.'</div>
+                            <div class="panel-body" id="total_price">0</div>
                         </div>
                     </div>
                 </div>

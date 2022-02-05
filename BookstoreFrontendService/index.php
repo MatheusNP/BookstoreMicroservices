@@ -56,14 +56,8 @@ if (isset($_GET['response'])) {
 
     <?php include "./components/navbar.php"; ?>
 
-    <div id="top">
-        <div id="searchbox" class="container-fluid" style="width:112%;margin-left:-6%;margin-right:-6%;">
-            <div>
-                <form role="search" method="POST" action="Result.php">
-                    <input type="text" class="form-control" name="keyword" style="width:80%;margin:20px 10% 20px 10%;" placeholder="Search for a Book , Author Or Category">
-                </form>
-            </div>
-        </div>
+    <div id="top" >
+        <?php include "./components/searchbox.php"; ?>
 
         <div class="container-fluid" id="header">
         <div class="row">
@@ -117,7 +111,7 @@ if (isset($_GET['response'])) {
                             <div class="item">
                                 <img class="img-responsive" src="img/carousel/6.jpg">
                             </div>
-                      </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-lg-3" id="offer">
@@ -310,7 +304,6 @@ if (isset($_GET['response'])) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/script.js"></script>
 
     <script>
     $(document).ready(function() {

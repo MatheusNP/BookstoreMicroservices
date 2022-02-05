@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once "./helpers/authorization.php";
-
 ?>
 
 <!DOCTYPE html>
@@ -30,33 +29,7 @@ require_once "./helpers/authorization.php";
     <?php include "./components/navbar.php"; ?>
 
     <div id="top" >
-        <div id="searchbox" class="container-fluid" style="width:112%;margin-left:-6%;margin-right:-6%;">
-            <div>
-                <form role="search" action="Result.php" method="post">
-                    <input type="text" name="keyword" class="form-control" placeholder="Search for a Book , Author Or Category" style="width:80%;margin:20px 10% 20px 10%;">
-                </form>
-            </div>
-        </div>
-
-        <!-- //     if ($_POST['sort']=="price") {
-        //         $query = "SELECT * FROM products WHERE Category='$category' ORDER BY Price";
-        //         $result = mysqli_query ($con,$query)or die(mysqli_error($con));
-                    // ?php
-                    // <script type="text/javascript">
-                    //     document.getElementById('select').Selected=$_POST['sort'];
-                    // </script>
-                    // php?
-        //     } else if ($_POST['sort']=="priceh") {
-        //         $query = "SELECT * FROM products WHERE Category='$category' ORDER BY Price DESC";
-        //         $result = mysqli_query ($con,$query)or die(mysqli_error($con));
-        //     } else if ($_POST['sort']=="discount") {
-        //         $query = "SELECT * FROM products WHERE Category='$category' ORDER BY Discount DESC";
-        //         $result = mysqli_query ($con,$query)or die(mysqli_error($con));
-        //     } else if ($_POST['sort']=="discountl") {
-        //         $query = "SELECT * FROM products WHERE Category='$category' ORDER BY Discount";
-        //         $result = mysqli_query ($con,$query)or die(mysqli_error($con));
-        //     }
-        // $i=0; -->
+        <?php include "./components/searchbox.php"; ?>
 
         <div class="container-fluid" id="books">
             <div class="row">
@@ -67,16 +40,14 @@ require_once "./helpers/authorization.php";
             <div class="container fluid">
                 <div class="row">
                     <div class="col-sm-5 col-sm-offset-6 col-md-5 col-md-offset-7 col-lg-4 col-lg-offset-8">
-
                         <label for="sort">Sort by &nbsp: &nbsp</label>
-                        <select name="sort" id="select" onchange="form.submit()">
-                            <option value="default" name="default"  selected="selected">Select</option>
-                            <option value="price" name="price">Low To High Price </option>
-                            <option value="priceh" name="priceh">Highest To Lowest Price </option>
-                            <option value="discountl" name="discountl">Low To High Discount </option>
-                            <option value="discount" name="discount">Highest To Lowest Discount</option>
+                        <select name="sort" id="select" onchange="setOrder(this.value);">
+                            <option value="" selected>Select</option>
+                            <option value="offered_price#asc">Low To High Price </option>
+                            <option value="offered_price#desc">Highest To Lowest Price </option>
+                            <option value="discount_pctg#asc">Low To High Discount </option>
+                            <option value="discount_pctg#desc">Highest To Lowest Discount</option>
                         </select>
-
                     </div>
                 </div>
             </div>
@@ -92,14 +63,21 @@ require_once "./helpers/authorization.php";
 
     var urlParams = new URLSearchParams(window.location.search);
     var category_name = urlParams.get('value');
+    var order_by = "";
 
     $(document).ready(function() {
+
+        actionButtons();
+    });
+
+    function actionButtons() {
 
         $.ajax({
             url: `http://localhost:8000/api/books/category/`,
             method: 'GET',
             data: {
-                'category_name': category_name
+                'category_name': category_name,
+                'order_by': order_by
             },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('Authorization', "<?= $_SESSION['token']; ?>");
@@ -111,11 +89,6 @@ require_once "./helpers/authorization.php";
                 getErrorMessage(error);
             }
         });
-
-        actionButtons();
-    });
-
-    function actionButtons() {
     }
 
     function getErrorMessage(error) {
@@ -132,10 +105,11 @@ require_once "./helpers/authorization.php";
     }
 
     function setBookListElements(data) {
+        $('#list').remove();
 
         $('#heading>h2').html(`${category_name} STORE`);
 
-        let orders = $(`<div></div>`);
+        let orders = $(`<div id="list"></div>`);
         const book_element = $(`
             <div>
                 <a href="#">
@@ -160,9 +134,6 @@ require_once "./helpers/authorization.php";
         data.forEach(function(value, index) {
 
             let book_clone = book_element.clone();
-            if (book_clone.find('a')) {
-                console.log(book_clone.find('a'));
-            }
             book_clone.find('a').attr('href', `description.php?ID=${value.product_id}`);
             book_clone.find('img').attr('src', `img/books/${value.product_id}.jpg`);
             book_clone.find('.book_title').html(value.title);
@@ -183,7 +154,11 @@ require_once "./helpers/authorization.php";
         }
 
         $('#books').append(orders[0].outerHTML);
+    }
 
+    function setOrder(value) {
+
+        order_by = value;
         actionButtons();
     }
     </script>
