@@ -59,4 +59,15 @@ class OrderService
     {
         return $this->performRequest('DELETE', "/orders/{$id}", $data);
     }
+
+    /**
+     * Complete the purchase of orders from authenticated user;
+     *
+     * @param integer $user_id
+     * @return string
+     */
+    public function complete(int $user_id): string
+    {
+        return $this->performRequest('DELETE', "/orders/complete/{$user_id}");
+    }
 }

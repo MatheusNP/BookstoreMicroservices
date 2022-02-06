@@ -33,9 +33,10 @@ $router->group(['prefix' => 'api'], function() use ($router) {
         $router->get('/orders/me/', 'OrderController@list');    
         $router->post('/orders', 'OrderController@store');    
         $router->delete('/orders/{id}', 'OrderController@destroy');    
+        $router->delete('/orders/complete/me/', 'OrderController@complete');    
 
         $router->get('/tickets/me/', 'TicketController@list');
-        $router->post('/tickets', 'TicketController@store');
+        $router->post('/tickets', 'TicketController@store');    
 
         $router->get('/search', 'SearchController@show');    
 

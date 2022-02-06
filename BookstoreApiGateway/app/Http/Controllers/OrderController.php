@@ -48,7 +48,6 @@ class OrderController extends Controller
     {
         $user_id = $request->user()->id;
         $result_orders = json_decode($this->orderService->list($user_id), true)['data'];
-        // $result_orders = json_decode($this->orderService->list(3), true)['data'];
 
         $books_id = array_column($result_orders, 'book_id');
         $result_books = json_decode($this->bookService->ordered($books_id), true)['data'];
@@ -90,5 +89,18 @@ class OrderController extends Controller
         $data['user_id'] = $request->user()->id;
 
         return $this->validResponse($this->orderService->destroy($id, $data));
+    }
+
+    /**
+     * Complete the purchase of orders from authenticated user;
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function complete(Request $request): Response
+    {
+        $user_id = $request->user()->id;
+
+        return $this->validResponse($this->orderService->complete($user_id));
     }
 }
