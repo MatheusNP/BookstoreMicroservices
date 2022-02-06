@@ -4,17 +4,9 @@ session_start();
 $index = true;
 require_once "./helpers/authorization.php";
 
-if (isset($_GET['Message'])) {
-    print '<script type="text/javascript">
-               alert("' . $_GET['Message'] . '");
-           </script>';
-}
+if (isset($_GET['message']))
+    print '<script type="text/javascript">alert("' . $_GET['message'] . '");</script>';
 
-if (isset($_GET['response'])) {
-    print '<script type="text/javascript">
-               alert("' . $_GET['response'] . '");
-           </script>';
-}
 ?>
 
 <!DOCTYPE html>
@@ -44,12 +36,8 @@ if (isset($_GET['response'])) {
             #query_button {padding: 5px 20px;}
         }
 
-        /* #category ul li{cursor: pointer;color: #337ab7;} */
-        /* #category ul li:hover{text-decoration-line: underline;} */
-        /* #offer img:hover{cursor: pointer;} */
         #new div div div{color: #337ab7;}
         #new div div div:hover{cursor: pointer;text-decoration-line: underline;}
-        /* #author div div img:hover{cursor: pointer;} */
     </style>
 </head>
 <body>
@@ -233,7 +221,7 @@ if (isset($_GET['response'])) {
                         </div>
                         <div class="col-md-6 text-center">
                             <span class="glyphicon glyphicon-envelope"></span>
-                            <p>BookStore@gmail.com</p>
+                            <p>bookstore@gmail.com</p>
                         </div>
                     </div>
                 </div>
@@ -241,19 +229,19 @@ if (isset($_GET['response'])) {
                 <div class="col-sm-4 col-md-3 col-lg-3 text-center">
                     <h2 style="color:#D67B22;">Follow Us At</h2>
                     <div>
-                        <a href="https://twitter.com/strandbookstore">
+                        <a href="https://twitter.com/bookstore">
                             <img title="Twitter" alt="Twitter" src="img/social/twitter.png" width="35" height="35" />
                         </a>
-                        <a href="https://www.linkedin.com/company/strand-book-store">
+                        <a href="https://www.linkedin.com/company/bookstore">
                             <img title="LinkedIn" alt="LinkedIn" src="img/social/linkedin.png" width="35" height="35" />
                         </a>
-                        <a href="https://www.facebook.com/strandbookstore/">
+                        <a href="https://www.facebook.com/bookstore/">
                             <img title="Facebook" alt="Facebook" src="img/social/facebook.png" width="35" height="35" />
                         </a>
-                        <a href="https://plus.google.com/111917722383378485041">
+                        <a href="https://plus.google.com/bookstore">
                             <img title="google+" alt="google+" src="img/social/google.jpg" width="35" height="35" />
                         </a>
-                        <a href="https://www.pinterest.com/strandbookstore/">
+                        <a href="https://www.pinterest.com/bookstore/">
                             <img title="Pinterest" alt="Pinterest" src="img/social/pinterest.jpg" width="35" height="35" />
                         </a>
                     </div>
@@ -274,23 +262,17 @@ if (isset($_GET['response'])) {
                         <h4 class="modal-title">Ask your query here</h4>
                     </div>
                     <div class="modal-body">
-                        <form method="post" action="query.php" class="form" role="form">
-                            <div class="form-group">
-                                <label class="sr-only" for="name">Name</label>
-                                <input type="text" class="form-control"  placeholder="Your Name" name="sender" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="sr-only" for="email">Email</label>
-                                <input type="email" class="form-control" placeholder="abc@gmail.com" name="senderEmail" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="sr-only" for="query">Message</label>
-                                <textarea class="form-control" rows="5" cols="30" name="message" placeholder="Your Query" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <button type="button" name="submit" id="send_query" class="btn btn-block">Send Query</button>
-                            </div>
-                        </form>
+                        <div class="form-group">
+                            <label class="sr-only" for="email">Email</label>
+                            <input type="email" class="form-control" placeholder="abc@gmail.com" name="senderEmail" id="senderEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="query">Message</label>
+                            <textarea class="form-control" rows="5" cols="30" name="message" id="message" placeholder="Your Query" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" name="submit" id="send_query" class="btn btn-block">Send Query</button>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -325,7 +307,7 @@ if (isset($_GET['response'])) {
                     let user = response.data.user;
                     let token = `Bearer ${response.data.token}`;
 
-                    userLogin(user, token);
+                    userLogin(user, $("#login_username").val(), token);
                 },
                 error: function(error) {
                     getErrorMessage(error);
@@ -356,23 +338,42 @@ if (isset($_GET['response'])) {
         // Log out;
         $("#send_logout").click(function() {
             $.ajax({
-              url: `http://localhost:8000/api/users/logout`,
-              method: 'POST',
-              beforeSend: function(xhr) {
-                  xhr.setRequestHeader('Authorization', "<?= $_SESSION['token']; ?>");
-              },
-              success: function(data) {
-                  userLogout()
-              },
-              error: function(error) {
-                  getErrorMessage(error);
-              }
+                url: `http://localhost:8000/api/users/logout`,
+                method: 'POST',
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', "<?= $_SESSION['token']; ?>");
+                },
+                success: function(data) {
+                    userLogout()
+                },
+                error: function(error) {
+                    getErrorMessage(error);
+                }
             });
         });
 
         // Send query;
         $("#send_query").click(function() {
-            alert('send_query');
+            $.ajax({
+                url: `http://localhost:8000/api/tickets`,
+                method: 'POST',
+                data: {
+                    email: $("#senderEmail").val(),
+                    description: $("#message").val()
+                },
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', "<?= $_SESSION['token']; ?>");
+                },
+                success: function(data) {
+                    alert('Your Message has been successfully sent! Our customer executive would respond shortly.');
+                    $("#senderEmail").val('');
+                    $("#message").val('');
+                    $('#query').removeClass('in').addClass('out');
+                },
+                error: function(error) {
+                    getErrorMessage(error);
+                }
+            });
         });
     }
 
@@ -389,11 +390,12 @@ if (isset($_GET['response'])) {
         }
     }
 
-    function userLogin(user, token) {
+    function userLogin(user, username, token) {
         alert("successfully logged in!!!");
 
         let form = $('<form action="index.php" method="post">' +
             '<input type="hidden" name="user" value="' + user + '" />' +
+            '<input type="hidden" name="username" value="' + username + '" />' +
             '<input type="hidden" name="token" value="' + token + '" />' +
             '</form>');
         $('body').append(form);
@@ -401,6 +403,8 @@ if (isset($_GET['response'])) {
     }
 
     function userLogout() {
+        alert("Successfully logged out!!");
+
         let form = $('<form action="index.php" method="post">' +
             '<input type="hidden" name="logout" value="1" />' +
             '</form>');

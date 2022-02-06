@@ -78,7 +78,7 @@
                     </div>
                 </li>
                 <?php else: ?>
-                <li> <span class="btn btn-lg" onClick='window.location.replace("index.php");'> Hello <?= $_SESSION['user']; ?></span></li>
+                <li> <span class="btn btn-lg" onClick='window.location.replace("index.php");'> Hello, <?= $_SESSION['username']; ?></span></li>
                 <li> <span id='send_cart' class="btn btn-lg" onClick='window.location.replace("cart.php");'> Cart </span> </li>
                 <li> <span id='send_logout' class="btn btn-lg"> LogOut </span> </li>
                 <?php endif; ?>
