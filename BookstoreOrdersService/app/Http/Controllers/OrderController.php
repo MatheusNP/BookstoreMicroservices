@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mail;
 use App\Models\Order;
 use App\Traits\ApiResponser;
 use Illuminate\Http\JsonResponse;
@@ -52,7 +53,11 @@ class OrderController extends Controller
 
         $this->validate($request, $rules);
 
-        $order = Order::create($request->all());
+        $data = $request->all();
+        $order = Order::updateOrCreate(
+            ['user_id' => $data['user_id'], 'book_id' => $data['book_id']],
+            ['quantity' => $data['quantity']]
+        );
 
         return $this->successResponse($order, Response::HTTP_CREATED);
     }
@@ -75,5 +80,37 @@ class OrderController extends Controller
         $order->delete();
 
         return $this->successResponse($order);
+    }
+
+    /**
+     * Complete the purchase of orders from authenticated user;
+     *
+     * @param Request $request
+     * @param integer $user_id
+     * @return JsonResponse
+     */
+    public function complete(Request $request, int $user_id): JsonResponse
+    {
+        $order = Order::where('user_id', $user_id);
+        $orders = $order->get()->toArray();
+        if (!count($orders)) {
+            return $this->errorResponse('You have no books in your cart.', Response::HTTP_BAD_REQUEST);
+        }
+
+        $msgBody = "";
+        foreach ($orders as $item) {
+            $msgBody.= "Book ID: {$item['book_id']}\nQuantity: {$item['quantity']}\n\n";
+        }
+
+        $order->delete();
+
+        $mail = new Mail(
+            env('MAIL_TO', "warehouse.bookstore@gmail.com"),
+            env('MAIL_SUBJECT', "Order from bookstore"),
+            $msgBody
+        );
+        event(new \App\Events\MailCreatedEvent($mail));
+
+        return $this->successResponse($orders);
     }
 }
