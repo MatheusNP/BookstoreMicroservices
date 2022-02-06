@@ -23,7 +23,7 @@ require_once "./helpers/authorization.php";
         .panel-heading {background:#D67B22 !important;color:white !important;}
         @media only screen and (width: 767px) { body{margin-top:150px;}}
 
-        #has-orders{display: none;}
+        #has_orders{display: none;}
     </style>
 </head>
 <body>
@@ -90,7 +90,9 @@ require_once "./helpers/authorization.php";
                 xhr.setRequestHeader('Authorization', "<?= $_SESSION['token']; ?>");
             },
             success: function(response) {
-                setOrderElements(response.data);
+                if (response.data.length > 0) {
+                    setOrderElements(response.data);
+                }
             },
             error: function(error) {
                 getErrorMessage(error);
@@ -215,6 +217,7 @@ require_once "./helpers/authorization.php";
         $('#has_orders').prepend(orders[0].outerHTML);
         $('#total_price').html(total);
         $('#empty_orders').hide();
+        $('#has_orders').show();
 
         reActionButtons();
     }
