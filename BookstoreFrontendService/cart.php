@@ -2,16 +2,6 @@
 session_start();
 require_once "./helpers/authorization.php";
 
-// $customer=$_SESSION['user'];
-// if (isset($_GET['place'])) {
-//     $query="DELETE FROM cart where Customer='$customer'";
-//     $result=mysqli_query($con,$query);
-//     php?
-//     <script type="text/javascript">
-//         alert("Order SuccessFully Placed!! Kindly Keep the cash Ready. It will be collected on Delivery");
-//     </script>
-//     ?php
-// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,7 +68,7 @@ require_once "./helpers/authorization.php";
                         <a href="index.php" class="btn btn-lg" style="background:#D67B22;color:white;font-weight:800;">Continue Shopping</a>
                     </div>
                     <div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-2 col-md-4 col-md-offset-1 col-lg-4 ">
-                        <a href="cart.php?place=true" class="btn btn-lg" style="background:#D67B22;color:white;font-weight:800;margin-top:5px;">Place Order</a>
+                        <button type="button" class="btn btn-lg" id="send_place" style="background:#D67B22;color:white;font-weight:800;margin-top:5px;">Place Order</button>
                     </div>
                 </div>
             </div>
@@ -107,10 +97,28 @@ require_once "./helpers/authorization.php";
             }
         });
 
-        actionButtons();
+        // Finaliza pedido;
+        $("#send_place").click(function() {
+            $.ajax({
+                url: `http://localhost:8000/api/orders/complete/me`,
+                method: 'DELETE',
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', "<?= $_SESSION['token']; ?>");
+                },
+                success: function(data) {
+                    alert("Order SuccessFully Placed!! Kindly Keep the cash Ready. It will be collected on Delivery");
+                    window.location.replace("index.php");
+                },
+                error: function(error) {
+                    getErrorMessage(error);
+                }
+            });
+        });
+
+        reActionButtons();
     });
 
-    function actionButtons() {
+    function reActionButtons() {
 
         // Remove pedido;
         $(".send_remove_order").click(function() {
@@ -208,7 +216,7 @@ require_once "./helpers/authorization.php";
         $('#total_price').html(total);
         $('#empty_orders').hide();
 
-        actionButtons();
+        reActionButtons();
     }
 
     function removeOrder() {
