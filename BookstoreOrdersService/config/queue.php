@@ -67,7 +67,7 @@ return [
 
         'rabbitmq' => [
             'driver' => 'rabbitmq',
-            'queue' => env('RABBITMQ_QUEUE', 'mail.service'),
+            'queue' => env('RABBITMQ_QUEUE_NAME', 'mail.service'),
             'connection' => PhpAmqpLib\Connection\AMQPLazyConnection::class,
             'hosts' => [
                 [
@@ -86,21 +86,21 @@ return [
                     'verify_peer' => env('RABBITMQ_SSL_VERIFY_PEER', true),
                     'passphrase' => env('RABBITMQ_SSL_PASSPHRASE', null),
                 ],
-                'queue' => [
-                    'exchange' => 'mail.fanout',
-                    'exchange_type' => 'fanout',
-                    'prioritize_delay_messages' => false,
-                    'queue_max_priority' => 10,
-                    'job' => VladimirYuldashev\LaravelQueueRabbitMQ\Queue\Jobs\RabbitMQJob::class,
-                ],
                 'exchange' => [
-                    'name' => env('RABBITMQ_EXCHANGE_NAME', 'mail.fanout'),
+                    'name' => env('RABBITMQ_EXCHANGE_NAME', 'mail.direct'),
                     'declare' => env('RABBITMQ_EXCHANGE_DECLARE', true),
-                    'type' => env('RABBITMQ_EXCHANGE_TYPE', 'fanout'),
+                    'type' => env('RABBITMQ_EXCHANGE_TYPE', 'direct'),
                     'passive' => env('RABBITMQ_EXCHANGE_PASSIVE', false),
                     'durable' => env('RABBITMQ_EXCHANGE_DURABLE', true),
                     'auto_delete' => env('RABBITMQ_EXCHANGE_AUTODELETE', false),
                     'arguments' => env('RABBITMQ_EXCHANGE_ARGUMENTS'),
+                ],
+                'queue' => [
+                    'declare' => env('RABBITMQ_QUEUE_DECLARE', true),
+                    'bind' => env('RABBITMQ_QUEUE_DECLARE_BIND', true),
+                    'prioritize_delay_messages' => false,
+                    'queue_max_priority' => 10,
+                    'job' => VladimirYuldashev\LaravelQueueRabbitMQ\Queue\Jobs\RabbitMQJob::class,
                 ],
             ],
             'worker' => env('RABBITMQ_WORKER', 'default'),

@@ -8,3 +8,4 @@ Homestead.yaml
 
 database/database.sqlite
 storage/*.key
+/*.log
