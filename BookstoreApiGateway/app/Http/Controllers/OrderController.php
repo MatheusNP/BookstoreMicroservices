@@ -52,11 +52,11 @@ class OrderController extends Controller
         $books_id = array_column($result_orders, 'book_id');
         $result_books = json_decode($this->bookService->ordered($books_id), true)['data'];
 
-        $data = array_map(function($val) use ($result_books, $books_id) {
+        $data = $result_books ? array_map(function($val) use ($result_books, $books_id) {
             $val['book'] = $result_books[array_search($val['book_id'], $books_id)];
 
             return $val;
-        }, $result_orders);
+        }, $result_orders) : [];
 
         $result = json_encode(['data' => $data]);
 
