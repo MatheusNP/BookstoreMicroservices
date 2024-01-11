@@ -1,0 +1,131 @@
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - my-network
+
+  service-api:
+    build:
+      context: .
+      dockerfile: Dockerfile-api
+    ports:
+      - 8000:8000
+    environment:
+      - BOOKS_SERVICE_BASE_URL=service-books:8001
+      - BOOKS_SERVICE_SECRET=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      - ORDERS_SERVICE_BASE_URL=service-orders:8002
+      - ORDERS_SERVICE_SECRET=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      - SUPPORT_SERVICE_BASE_URL=service-support:8003
+      - SUPPORT_SERVICE_SECRET=cccccccccccccccccccccccccccccccc
+      - SEARCH_SERVICE_BASE_URL=service-search:8004
+      - SEARCH_SERVICE_SECRET=dddddddddddddddddddddddddddddddd
+      - MAIL_SERVICE_BASE_URL=service-mail:8005
+      - MAIL_SERVICE_SECRET=eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+      - ALLOWED_ORIGINS_FRONTEND=http://127.0.0.1:8006
+    command: sh -c "php -S 0.0.0.0:8000 public/index.php"
+    depends_on:
+      - service-books
+      - service-orders
+      - service-support
+      - service-search
+      - service-mail
+      # - service-frontend
+    networks:
+      - my-network
+
+  service-books:
+    build:
+      context: .
+      dockerfile: Dockerfile-books
+    ports:
+      - 8001:8001
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    command: sh -c "php -S 0.0.0.0:8001 public/index.php"
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+
+  service-orders:
+    build:
+      context: .
+      dockerfile: Dockerfile-orders
+    ports:
+      - 8002:8002
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    command: sh -c "php -S 0.0.0.0:8002 public/index.php"
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+
+  service-support:
+    build:
+      context: .
+      dockerfile: Dockerfile-support
+    ports:
+      - 8003:8003
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    command: sh -c "php -S 0.0.0.0:8003 public/index.php"
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+
+  service-search:
+    build:
+      context: .
+      dockerfile: Dockerfile-search
+    ports:
+      - 8004:8004
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    command: sh -c "supervisord -c /etc/supervisor/conf.d/queue_listen.conf && php -S 0.0.0.0:8004 public/index.php"
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+    volumes:
+      - ./.docker/php/supervisor/queue_listen.conf:/etc/supervisor/conf.d/queue_listen.conf:ro
+
+  service-mail:
+    build:
+      context: .
+      dockerfile: Dockerfile-mail
+    ports:
+      - 8005:8005
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    command: sh -c "supervisord -c /etc/supervisor/conf.d/queue_listen.conf && php -S 0.0.0.0:8005 public/index.php"
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+    volumes:
+      - ./.docker/php/supervisor/queue_listen.conf:/etc/supervisor/conf.d/queue_listen.conf:ro
+
+  # service-frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-frontend
+  #   ports:
+  #     - 8006:8006
+  #   command: sh -c "php -S 0.0.0.0:8006 index.php"
+  #   depends_on:
+  #     - rabbitmq
+  #   networks:
+  #     - my-network
+
+networks:
+  my-network:
+    driver: bridge
