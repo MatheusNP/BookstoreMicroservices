@@ -1,0 +1,13 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8004:8004
+    command: php -S 0.0.0.0:8004 public/index.php
+    networks:
+      - my-network
+networks:
+  my-network:
+    driver: bridge
