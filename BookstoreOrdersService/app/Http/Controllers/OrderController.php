@@ -73,7 +73,7 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($id);
 
-        if ($order->user_id !== ((int) $request->get('user_id', 0))) {
+        if ($order->user_id != $request->get('user_id', 0)) {
             return $this->errorResponse('This order is not yours.', Response::HTTP_BAD_REQUEST);
         }
 
