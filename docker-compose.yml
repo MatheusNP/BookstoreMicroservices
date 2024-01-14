@@ -18,6 +18,7 @@ services:
     ports:
       - 8000:8000
     environment:
+      - APP_KEY=00000000000000000000000000000000
       - BOOKS_SERVICE_BASE_URL=service-books:8001
       - BOOKS_SERVICE_SECRET=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
       - ORDERS_SERVICE_BASE_URL=service-orders:8002
@@ -28,7 +29,7 @@ services:
       - SEARCH_SERVICE_SECRET=dddddddddddddddddddddddddddddddd
       - MAIL_SERVICE_BASE_URL=service-mail:8005
       - MAIL_SERVICE_SECRET=eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-      - ALLOWED_ORIGINS_FRONTEND=http://127.0.0.1:8006
+      - ALLOWED_ORIGINS_FRONTEND=http://localhost:8006
     command: sh -c "php -S 0.0.0.0:8000 public/index.php"
     depends_on:
       - service-books
@@ -47,6 +48,8 @@ services:
     ports:
       - 8001:8001
     environment:
+      - APP_KEY=11111111111111111111111111111111
+      - ACCEPTED_SECRETS=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
       - RABBITMQ_HOST=rabbitmq
     command: sh -c "php -S 0.0.0.0:8001 public/index.php"
     depends_on:
@@ -61,7 +64,11 @@ services:
     ports:
       - 8002:8002
     environment:
+      - APP_KEY=22222222222222222222222222222222
+      - ACCEPTED_SECRETS=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
       - RABBITMQ_HOST=rabbitmq
+      - MAIL_TO=noreply@bookstore.com
+      - MAIL_SUBJECT="Order from bookstore"
     command: sh -c "php -S 0.0.0.0:8002 public/index.php"
     depends_on:
       - rabbitmq
@@ -75,7 +82,12 @@ services:
     ports:
       - 8003:8003
     environment:
+      - APP_KEY=33333333333333333333333333333333
+      - ACCEPTED_SECRETS=cccccccccccccccccccccccccccccccc
       - RABBITMQ_HOST=rabbitmq
+      - MAIL_TO=noreply@bookstore.com
+      - MAIL_SUBJECT="Query from bookstore"
+      - MAIL_RES_SUBJECT="Confirmation of receiving your query"
     command: sh -c "php -S 0.0.0.0:8003 public/index.php"
     depends_on:
       - rabbitmq
@@ -89,6 +101,8 @@ services:
     ports:
       - 8004:8004
     environment:
+      - APP_KEY=44444444444444444444444444444444
+      - ACCEPTED_SECRETS=dddddddddddddddddddddddddddddddd
       - RABBITMQ_HOST=rabbitmq
     command: sh -c "supervisord -c /etc/supervisor/conf.d/queue_listen.conf && php -S 0.0.0.0:8004 public/index.php"
     depends_on:
@@ -105,6 +119,8 @@ services:
     ports:
       - 8005:8005
     environment:
+      - APP_KEY=55555555555555555555555555555555
+      - ACCEPTED_SECRETS=eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
       - RABBITMQ_HOST=rabbitmq
     command: sh -c "supervisord -c /etc/supervisor/conf.d/queue_listen.conf && php -S 0.0.0.0:8005 public/index.php"
     depends_on:

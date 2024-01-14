@@ -15,6 +15,8 @@ RUN touch database.sqlite
 
 WORKDIR /src
 
+RUN cp ./.env.example ./.env
+
 RUN php artisan migrate && \
 php artisan passport:install
 
